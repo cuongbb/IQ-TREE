@@ -60,6 +60,7 @@
 #include "tree/ncbitree.h"
 #include "pda/ecopd.h"
 #include "tree/upperbounds.h"
+#include "tree/terraces_count.h"
 #include "pda/ecopdmtreeset.h"
 #include "pda/gurobiwrapper.h"
 #include "utils/timeutil.h"
@@ -2537,7 +2538,9 @@ int main(int argc, char *argv[]) {
 	if (Params::getInstance().tree_gen != NONE) {
 		generateRandomTree(Params::getInstance());
 //	} else if (Params::getInstance().do_pars_multistate) {
-//		doParsMultiState(Params::getInstance());
+//		doParsMultiState(Params::getInstance())
+	} else if (Params::getInstance().terraces_count){
+		terraces_count_main();
 	} else if (Params::getInstance().rf_dist_mode != 0) {
 		computeRFDist(Params::getInstance());
 	} else if (Params::getInstance().test_input != TEST_NONE) {
@@ -2633,7 +2636,7 @@ int main(int argc, char *argv[]) {
 	delete checkpoint;
 
 	finish_random();
-    
+
 #ifdef _IQTREE_MPI
     MPI_Finalize();
 #endif    

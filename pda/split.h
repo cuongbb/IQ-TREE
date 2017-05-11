@@ -155,7 +155,7 @@ public:
 		@param sp the other split
 		@return true if this split is compatible with sp
 	*/
-	bool compatible(Split &sp);
+	/**/bool compatible(Split &sp);									/**/
 
 	/**	
 		@param taxa_set set of taxa
@@ -243,7 +243,7 @@ public:
 		get the set difference with another split
 		@param sp a split
 	*/
-	Split &operator-=(Split &sp);
+	/**/Split &operator-=(Split &sp);							/**/
 
 	/**
 		@return TRUE if there is overlapped taxon with sp, FALSE otherwise

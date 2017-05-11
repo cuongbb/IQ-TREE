@@ -209,6 +209,7 @@ void MExtTree::generateBalanced(int size) {
 /**
 	generate a random tree following uniform model
 */
+
 void MExtTree::generateUniform(int size, bool binary)
 {
 	if (size < 3)

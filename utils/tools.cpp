@@ -893,6 +893,7 @@ void parseArg(int argc, char *argv[], Params &params) {
 	params.eco_weighted = false;
 	params.eco_run = 0;
 
+	params.terraces_count = false;
 	params.upper_bound = false;
 	params.upper_bound_NNI = false;
 	params.upper_bound_frac = 0.0;
@@ -2609,6 +2610,10 @@ void parseArg(int argc, char *argv[], Params &params) {
 				//params.diet = convert_int(argv[cnt]);
 				continue;
 			}
+			if (strcmp(argv[cnt], "-terrnum") == 0) {
+				params.terraces_count=true;
+				continue;
+			}
 			if (strcmp(argv[cnt], "-up") == 0) {
 				params.upper_bound = true;
 				continue;
@@ -3363,7 +3368,7 @@ void parseArg(int argc, char *argv[], Params &params) {
         }
 
     } // for
-    if (!params.user_file && !params.aln_file && !params.ngs_file && !params.ngs_mapped_reads && !params.partition_file) {
+    if (!params.user_file && !params.terraces_count && !params.aln_file && !params.ngs_file && !params.ngs_mapped_reads && !params.partition_file) {
 #ifdef IQ_TREE
         quickStartGuide();
 //        usage_iqtree(argv, false);

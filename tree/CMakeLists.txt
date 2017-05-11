@@ -36,6 +36,8 @@ phylotreesse.cpp
 quartet.cpp
 supernode.cpp
 supernode.h
+terraces_count.cpp
+terraces_count.h
 tinatree.cpp
 tinatree.h
 )
