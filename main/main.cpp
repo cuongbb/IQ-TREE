@@ -2540,7 +2540,8 @@ int main(int argc, char *argv[]) {
 //	} else if (Params::getInstance().do_pars_multistate) {
 //		doParsMultiState(Params::getInstance())
 	} else if (Params::getInstance().terraces_count){
-		terraces_count_main();
+		//terraces_count_main();
+		cout<<"what's going on???:)"<<endl;
 	} else if (Params::getInstance().rf_dist_mode != 0) {
 		computeRFDist(Params::getInstance());
 	} else if (Params::getInstance().test_input != TEST_NONE) {

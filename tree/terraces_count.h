@@ -135,7 +135,8 @@ class Terraces : public MExtTree
 
 };
 
-int terraces_count_main(){
+int terraces_count_main(){};
+int terraces_count_main3(){
 {
 	int a[10][10],s,g;
 	int nos[10],sum=0;
