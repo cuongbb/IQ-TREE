@@ -1713,6 +1713,11 @@ public:
 	 */
 	double upper_bound_frac;
 
+	/**********************************************/
+	/****** variables terrace tests ***************/
+	bool terrace_count;
+
+
 
     /**********************************************/
     /**** variables for ultra-fast bootstrap ******/

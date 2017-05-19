@@ -20,6 +20,8 @@
 #include "mexttree.h"
 #include "alignment/alignment.h"
 
+typedef vector<MTree* > MTreeVector;
+
 void MExtTree::generateRandomTree(TreeGenType tree_type, Params &params, bool binary) {
 	Alignment *alignment = NULL;
 	if (params.aln_file) {
@@ -205,6 +207,108 @@ void MExtTree::generateBalanced(int size) {
 	initializeTree();
 
 }
+
+/**
+ 	generate all possible combinations of tree of a given size
+ */..............
+MTreeVector MExtTree::generateTrees(int a[], int sze)
+{
+	int len=1;
+	int i;	//for index
+	// list of left- and right-end of branches
+	NodeVector myleaves;
+	Node *node;
+	MTreeVector T;
+	if(sze>2)
+	{
+		MTreeVector temp;
+		T=generateTrees(a,sze-1);
+		int z,notrees=1;
+		for(z=1;z<=2*sze-5;z+=2)
+		{
+			notrees*=z;
+		}
+		for(z=1;z<=notrees;z++)
+		{
+			temp.push_back(T.[T.size()-1]);
+			T.pop_back();
+		}
+
+		for(z=1;z<=notrees;z++)	//the no of different trees for size-1
+		{
+			// additionally add a leaf at all branches
+			for (i = 1; i <= 2*sze-5; i++)
+			{									//loop for every branch in previous size
+				copyTree(temp[i]);
+				terraceleft=temp[i]->terraceleft;
+				terraceright=temp[i]->terraceright;
+				// add an internal node
+				Node *newnode = newNode(sze+i-2);
+				// reconnect the left end
+				node = terraceleft[i];
+				for (NeighborVec::iterator it = node->neighbors.begin(); it != node->neighbors.end(); it++)
+					if ((*it)->node == terraceright[i]) {
+						(*it)->node = newnode;
+						(*it)->length = len;
+						newnode->addNeighbor(node, len);
+						//cout << "  left " << terraceleft[index]->id << " " << newnode->id << endl;
+						break;
+					}
+				// reconnect the right end
+				node = terraceright[i];
+				for (NeighborVec::iterator it = node->neighbors.begin(); it != node->neighbors.end(); it++)
+					if ((*it)->node == terraceleft[i]) {
+						(*it)->node = newnode;
+						(*it)->length = len;
+						newnode->addNeighbor(node, len);
+						//cout << "  right " << terraceright[index]->id  << " " << newnode->id  << endl;
+						break;
+					}
+
+				// add a new leaf
+				Node *newleaf = newNode(sze,(char)sze);
+				newnode->addNeighbor(newleaf, len);
+				newleaf->addNeighbor(newnode, len);
+
+				// update the terraceleft and terraceright list
+				terraceleft.push_back(newnode);
+				terraceright.push_back(terraceright[i]);
+
+				terraceleft.push_back(newnode);
+				terraceright.push_back(newleaf);
+
+				terraceright[i] = newnode;
+
+				myleaves.push_back(newleaf);
+
+				// indexing the leaves
+				setLeavesName(myleaves);
+
+				leafNum = sze;
+				nodeNum = leafNum;
+			}
+		}
+		return T;
+	}
+	else
+	{
+		root = newNode(0,"0");
+		// create initial tree with 2 leaves
+		node = newNode(1,"1");
+		root->addNeighbor(node, len);
+		node->addNeighbor(root, len);
+
+		terraceleft.push_back(root);
+		terraceright.push_back(node);
+
+		myleaves.push_back(root);
+		myleaves.push_back(node);
+		initializeTree();
+		T.push_back(this);
+		return T;
+	}
+}
+
 
 /**
 	generate a random tree following uniform model

@@ -897,6 +897,8 @@ void parseArg(int argc, char *argv[], Params &params) {
 	params.upper_bound_NNI = false;
 	params.upper_bound_frac = 0.0;
 
+	params.terrace_count = false;
+
     params.gbo_replicates = 0;
 	params.ufboot_epsilon = 0.5;
     params.check_gbo_sample_size = 0;
@@ -2621,6 +2623,11 @@ void parseArg(int argc, char *argv[], Params &params) {
 				if (cnt >= argc)
 				  throw "Use -upFrac <fraction>";
 				params.upper_bound_frac = convert_double(argv[cnt]);
+			}
+			if (strcmp(argv[cnt], "-terrcount") == 0) {
+				cnt++;
+				params.terrace_count = true;
+				continue;
 			}
 			if (strcmp(argv[cnt], "-ecoR") == 0) {
 				cnt++;

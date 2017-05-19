@@ -38,6 +38,8 @@ supernode.cpp
 supernode.h
 tinatree.cpp
 tinatree.h
+terracecount.h
+terracecount.cpp
 )
 
 target_link_libraries(tree pll model alignment)

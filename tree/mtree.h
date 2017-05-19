@@ -780,6 +780,8 @@ public:
     /** if WT_BR_SCALE turned on, printTree will scale branch length with this factor */
     double len_scale;
 
+    NodeVector terraceleft, terraceright;
+
     /**
     *   Pointer to the global params
     */
@@ -854,7 +856,8 @@ protected:
             @param node the starting node, NULL to start from the root
             @param dad dad of the node, used to direct the search
             @param stop (IN/OUT) set = true to stop the search
-     */
+     */	int terrace_leaf;
+
     void checkValidTree(bool& stop, Node *node = NULL, Node *dad = NULL);
 
     /**

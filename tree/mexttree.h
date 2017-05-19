@@ -23,6 +23,8 @@
 #include "mtree.h"
 #include "mtreeset.h"
 
+typedef vector<MTree* >	MTreeVector;
+
 /**
 extended tree, for bootstrap, cluster, etc (do not related to PDA main topic)
 
@@ -83,6 +85,12 @@ public:
 	*/
 	void generateConstrainedYuleHarding(Params &params, MTree* constraint_tree, StrVector &taxnames);
 
+	/**
+		generate all possible trees following uniform model
+		@param a array through which elements will named
+		@param sze number of taxa
+	*/
+	MTreeVector generateTrees(int a[], int sze);
 
 	/**
 		generate a random tree following uniform model
