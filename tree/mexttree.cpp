@@ -210,7 +210,7 @@ void MExtTree::generateBalanced(int size) {
 
 /**
  	generate all possible combinations of tree of a given size
- */..............
+ */
 MTreeVector MExtTree::generateTrees(int a[], int sze)
 {
 	int len=1;
@@ -230,7 +230,7 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 		}
 		for(z=1;z<=notrees;z++)
 		{
-			temp.push_back(T.[T.size()-1]);
+			temp.push_back(T[T.size()-1]);
 			T.pop_back();
 		}
 
@@ -239,9 +239,9 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 			// additionally add a leaf at all branches
 			for (i = 1; i <= 2*sze-5; i++)
 			{									//loop for every branch in previous size
-				copyTree(temp[i]);
-				terraceleft=temp[i]->terraceleft;
-				terraceright=temp[i]->terraceright;
+				copyTree(temp[z]);
+				terraceleft=temp[z]->terraceleft;
+				terraceright=temp[z]->terraceright;
 				// add an internal node
 				Node *newnode = newNode(sze+i-2);
 				// reconnect the left end
@@ -266,7 +266,7 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 					}
 
 				// add a new leaf
-				Node *newleaf = newNode(sze,(char)sze);
+				Node *newleaf = newNode(sze,(char)a[sze]);
 				newnode->addNeighbor(newleaf, len);
 				newleaf->addNeighbor(newnode, len);
 
@@ -286,15 +286,16 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 
 				leafNum = sze;
 				nodeNum = leafNum;
+				T.push_back(this);
 			}
 		}
 		return T;
 	}
 	else
 	{
-		root = newNode(0,"0");
+		root = newNode(0,(char)a[0]);
 		// create initial tree with 2 leaves
-		node = newNode(1,"1");
+		node = newNode(1,(char)a[1]);
 		root->addNeighbor(node, len);
 		node->addNeighbor(root, len);
 
