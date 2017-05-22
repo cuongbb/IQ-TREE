@@ -34,7 +34,7 @@ class MExtTree : public MTree
 {
 public:
 
-/********************************************************
+/*********************************************isLeaf***********
 	CONSTRUCTORs, INITIALIZATION AND DESTRUCTORs
 ********************************************************/
 
@@ -86,10 +86,19 @@ public:
 	void generateConstrainedYuleHarding(Params &params, MTree* constraint_tree, StrVector &taxnames);
 
 	/**
+		traversre through all branches to get left and right end vectors
+		@param dad the left end of the base branch
+		@param node the right end of the base branch over which neighbors will be looked upon
+	*/
+
+	void terraceleftright(Node* dad, Node* node);
+
+	/**
 		generate all possible trees following uniform model
 		@param a array through which elements will named
 		@param sze number of taxa
 	*/
+
 	MTreeVector generateTrees(int a[], int sze);
 
 	/**

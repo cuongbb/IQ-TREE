@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "mexttree.h"
 #include "alignment/alignment.h"
+#include "node.h"
 
 typedef vector<MTree* > MTreeVector;
 
@@ -211,37 +212,77 @@ void MExtTree::generateBalanced(int size) {
 /**
  	generate all possible combinations of tree of a given size
  */
+
+void MExtTree::terraceleftright(Node* dad, Node* node)
+{
+
+	for (NeighborVec::iterator it = node->neighbors.begin(); it != node->neighbors.end(); it++)
+	{
+		if((*it)->node!=dad)
+		{
+			if(!(((*it)->node)->isLeaf()) )
+			{
+				terraceleftright(node,(*it)->node);
+			}
+			terraceleft.push_back(node);
+			terraceright.push_back((*it)->node);
+		}
+	}
+
+	if(!(node==root))
+	{
+		terraceleft.push_back(dad);
+		terraceright.push_back(node);
+	}
+
+}
+
 MTreeVector MExtTree::generateTrees(int a[], int sze)
 {
 	int len=1;
-	int i;	//for index
+	int i;	//for indexfindNeighbor
 	// list of left- and right-end of branches
 	NodeVector myleaves;
 	Node *node;
 	MTreeVector T;
 	if(sze>2)
 	{
+
 		MTreeVector temp;
-		T=generateTrees(a,sze-1);
-		int z,notrees=1;
-		for(z=1;z<=2*sze-5;z+=2)
-		{
+		int z,notrees=1;	//notrees is no of trees for size-1
+		for(z=1;z<=2*sze-7;z+=2)
+		{								//for size
 			notrees*=z;
 		}
-		for(z=1;z<=notrees;z++)
-		{
-			temp.push_back(T[T.size()-1]);
-			T.pop_back();
-		}
 
-		for(z=1;z<=notrees;z++)	//the no of different trees for size-1
+
+		for (i = 0; i < 2*sze-5; i++)	//no of branches for size-1
 		{
+			MTreeVector appendTree;
+			appendTree=generateTrees(a,sze-1);
+
+			appendTree[appendTree.size()-1]->printTree(cout);
+
+			T.insert(T.end(),appendTree.begin(),appendTree.end());
+
+
+
+			for(int itz=1;itz<=notrees;itz++)
+			{
+				temp.push_back(T[T.size()-1]);
+				T.pop_back();
+			}
+			cout<<T.size();
+			cout<<"\t"<<temp.size()<<endl;
+
+//			temp[temp.size()-1].printTree(cout);
+			for(z=0;z<notrees;z++)	//the no of different trees for size-1	//check if to run from 0 or 1
+			{
 			// additionally add a leaf at all branches
-			for (i = 1; i <= 2*sze-5; i++)
-			{									//loop for every branch in previous size
-				copyTree(temp[z]);
-				terraceleft=temp[z]->terraceleft;
-				terraceright=temp[z]->terraceright;
+//				copyTree(temp[z]);
+				terraceleftright(root,root);
+				//				terraceleft=temp[z]->terraceleft;
+				//				terraceright=temp[z]->terraceright;
 				// add an internal node
 				Node *newnode = newNode(sze+i-2);
 				// reconnect the left end
@@ -286,7 +327,9 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 
 				leafNum = sze;
 				nodeNum = leafNum;
-				T.push_back(this);
+				MTree Treenew;
+				Treenew.copyTree(this);
+				T.push_back(&Treenew);
 			}
 		}
 		return T;
@@ -498,7 +541,7 @@ void MExtTree::generateConstrainedYuleHarding(Params &params, MTree* constraint_
     ASSERT(names.size() == taxnames.size());
     my_random_shuffle(names.begin()+leafNum, names.end());
 
-	// additionally add a leaf
+	// additionally add a leafneighbor
 	for (; leafNum < size; leafNum++)
 	{
 		int index;
