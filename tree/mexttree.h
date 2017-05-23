@@ -94,12 +94,20 @@ public:
 	void terraceleftright(Node* dad, Node* node);
 
 	/**
+	 	copy the structure from T to the invoking object
+	 	@param T Tree from which to copy from
+	 */
+
+	void copystructure(MTree* T);
+
+	/**
 		generate all possible trees following uniform model
+		@param T the MTreeVector
 		@param a array through which elements will named
 		@param sze number of taxa
 	*/
 
-	MTreeVector generateTrees(int a[], int sze);
+	void generateTrees(MTreeVector T,int a[], int sze);
 
 	/**
 		generate a random tree following uniform model

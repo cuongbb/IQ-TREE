@@ -216,6 +216,9 @@ void MExtTree::generateBalanced(int size) {
 void MExtTree::terraceleftright(Node* dad, Node* node)
 {
 
+	terraceleft.clear();
+	terraceright.clear();
+
 	for (NeighborVec::iterator it = node->neighbors.begin(); it != node->neighbors.end(); it++)
 	{
 		if((*it)->node!=dad)
@@ -234,30 +237,51 @@ void MExtTree::terraceleftright(Node* dad, Node* node)
 		terraceleft.push_back(dad);
 		terraceright.push_back(node);
 	}
+}
+
+void MExtTree::copystructure(MTree* T)
+{
 
 }
 
-MTreeVector MExtTree::generateTrees(int a[], int sze)
+void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 {
 	int len=1;
 	int i;	//for indexfindNeighbor
 	// list of left- and right-end of branches
 	NodeVector myleaves;
+	MTreeVector temp;
 	Node *node;
-	MTreeVector T;
+	MTree Treenew;
 	if(sze>2)
 	{
-
-		MTreeVector temp;
 		int z,notrees=1;	//notrees is no of trees for size-1
 		for(z=1;z<=2*sze-7;z+=2)
-		{								//for size
+		{								//for size-1
 			notrees*=z;
 		}
-
-
 		for (i = 0; i < 2*sze-5; i++)	//no of branches for size-1
 		{
+			temp.clear();
+			generateTrees(T,a,sze-1);
+			int flag=1;
+//			cout<<"\ntemp size is\t"<<T.size()<<endl;
+
+			for(int itz=1;itz<=notrees;itz++)
+			{
+				temp.push_back(T[T.size()-itz]);
+//				T.pop_back();
+			}
+//			cout<<"\t"<<T.size()<<"\t"<<temp.size()<<endl;
+/*			cout<<"printing them for"<<i<<"time";
+			for(MTreeVector::iterator itemp=temp.begin(); itemp!=temp.end(); itemp++)
+			{
+//				cout<<flag++;
+				(*itemp)->printTree(cout);
+				cout<<endl;
+			}
+
+/*
 			MTreeVector appendTree;
 			appendTree=generateTrees(a,sze-1);
 
@@ -265,26 +289,22 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 
 			T.insert(T.end(),appendTree.begin(),appendTree.end());
 
-
-
+//			T[T.size()-1]->printTree(cout);
+			temp.clear();
 			for(int itz=1;itz<=notrees;itz++)
 			{
 				temp.push_back(T[T.size()-1]);
 				T.pop_back();
 			}
-			cout<<T.size();
-			cout<<"\t"<<temp.size()<<endl;
-
-//			temp[temp.size()-1].printTree(cout);
+//			cout<<T.size()<<"\t"<<temp.size()<<endl;
+//			temp[temp.size()-1].printTree(cout);*/
 			for(z=0;z<notrees;z++)	//the no of different trees for size-1	//check if to run from 0 or 1
 			{
 			// additionally add a leaf at all branches
-//				copyTree(temp[z]);
+				copyTree(temp[z]);
 				terraceleftright(root,root);
-				//				terraceleft=temp[z]->terraceleft;
-				//				terraceright=temp[z]->terraceright;
 				// add an internal node
-				Node *newnode = newNode(sze+i-2);
+				Node *newnode = newNode(sze+i+z-2);
 				// reconnect the left end
 				node = terraceleft[i];
 				for (NeighborVec::iterator it = node->neighbors.begin(); it != node->neighbors.end(); it++)
@@ -305,9 +325,8 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 						//cout << "  right " << terraceright[index]->id  << " " << newnode->id  << endl;
 						break;
 					}
-
 				// add a new leaf
-				Node *newleaf = newNode(sze,(char)a[sze]);
+				Node *newleaf = newNode(sze-1,(char)a[sze-1]);
 				newnode->addNeighbor(newleaf, len);
 				newleaf->addNeighbor(newnode, len);
 
@@ -321,35 +340,70 @@ MTreeVector MExtTree::generateTrees(int a[], int sze)
 				terraceright[i] = newnode;
 
 				myleaves.push_back(newleaf);
-
 				// indexing the leaves
-				setLeavesName(myleaves);
-
+				for (int i = 0; i < myleaves.size(); i++)
+				{
+					stringstream str;
+					str << 'T' << myleaves[i]->id;
+					myleaves[i]->name = str.str();
+				}
 				leafNum = sze;
 				nodeNum = leafNum;
-				MTree Treenew;
-				Treenew.copyTree(this);
-				T.push_back(&Treenew);
+/*				cout<<endl<<"printing T\t";
+//				T[T.size()-z-1]->printTree(cout);
+//				this->printTree(cout,WT_TAXON_ID);
+*/				T[T.size()-i-z-1]->copyTree(this);
+				if(sze==4)
+					{
+						cout<<"\nprinting this for "<<T.size()-i-z-1<<"\t";
+						T[T.size()-i-z-1]->printTree(cout);
+						cout<<endl;
+					}
+
 			}
 		}
-		return T;
+/*		T[2]->printTree(cout);
+		cout<<endl;
+/*		T[1]->printTree(cout);
+		cout<<endl;
+		T[0]->printTree(cout);
+		cout<<endl;
+*/
 	}
 	else
 	{
-		root = newNode(0,(char)a[0]);
+		root = newNode(a[0]);
 		// create initial tree with 2 leaves
-		node = newNode(1,(char)a[1]);
+		node = newNode(a[1]);
 		root->addNeighbor(node, len);
 		node->addNeighbor(root, len);
 
 		terraceleft.push_back(root);
 		terraceright.push_back(node);
+		MTree t;
 
 		myleaves.push_back(root);
 		myleaves.push_back(node);
+		for (int i = 0; i < myleaves.size(); i++)
+		{
+
+			stringstream str;
+			str << 'T' << myleaves[i]->id;
+			myleaves[i]->name = str.str();
+		}
+
+		leafNum = 2;
+		nodeNum = leafNum;
+
 		initializeTree();
-		T.push_back(this);
-		return T;
+
+		T[T.size()-1]->copyTree(this);
+//		Treenew.copyTree(this);
+//		T.push_back(&Treenew);
+
+//		cout<<"printing 2 taxa tree";
+//		T[T.size()-1]->printTree(cout);
+//		cout<<endl<<"working successfully\n";
 	}
 }
 
@@ -454,6 +508,13 @@ void MExtTree::generateYuleHarding(Params &params, bool binary) {
 	NodeVector innodes;
 	Node *node;
 	double len;
+	for (int i = 0; i < myleaves.size(); i++)
+				{
+					myleaves[i]->id = i;
+					stringstream str;
+					str << 'T' << myleaves[i]->id;
+					myleaves[i]->name = str.str();
+				}
 
 	innodes.push_back(root);
 	// create initial tree with 3 leaves
@@ -505,7 +566,14 @@ void MExtTree::generateYuleHarding(Params &params, bool binary) {
 	}
 
 	root = myleaves[0];
-	// indexing the leaves
+	// indexing the leaves	for (int i = 0; i < myleaves.size(); i++)
+	{
+		myleaves[i]->id = i;
+		stringstream str;
+		str << 'T' << myleaves[i]->id;
+		myleaves[i]->name = str.str();
+	}
+
 	setLeavesName(myleaves);
 
 	leafNum = myleaves.size();
@@ -540,6 +608,13 @@ void MExtTree::generateConstrainedYuleHarding(Params &params, MTree* constraint_
             names.push_back(*it);
     ASSERT(names.size() == taxnames.size());
     my_random_shuffle(names.begin()+leafNum, names.end());
+	for (int i = 0; i < myleaves.size(); i++)
+	{
+		myleaves[i]->id = i;
+		stringstream str;
+		str << 'T' << myleaves[i]->id;
+		myleaves[i]->name = str.str();
+	}
 
 	// additionally add a leafneighbor
 	for (; leafNum < size; leafNum++)
