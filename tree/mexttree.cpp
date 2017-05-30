@@ -215,10 +215,10 @@ void MExtTree::generateBalanced(int size) {
 
 void MExtTree::terraceleftright(Node* dad, Node* node)
 {
-
+	if(node==root)
+	cout<<"\nprinting in loop\n";
 	terraceleft.clear();
 	terraceright.clear();
-
 	for (NeighborVec::iterator it = node->neighbors.begin(); it != node->neighbors.end(); it++)
 	{
 		if((*it)->node!=dad)
@@ -227,16 +227,43 @@ void MExtTree::terraceleftright(Node* dad, Node* node)
 			{
 				terraceleftright(node,(*it)->node);
 			}
-			terraceleft.push_back(node);
-			terraceright.push_back((*it)->node);
+/*			if(terraceleft.size()!=0)
+			{	if( !((terraceleft[terraceleft.size()-1]==node)&&(terraceright[terraceright.size()-1]==(*it)->node)) )
+				{
+					terraceleft.push_back(node);
+					terraceright.push_back((*it)->node);
+				}
+			}
+			else*/
+			{
+				terraceleft.push_back(node);
+				terraceright.push_back((*it)->node);
+			}
 		}
 	}
 
-	if(!(node==root))
+/*	if(!(node==root))
+/*		if(terraceleft.size()!=0)
+		{	if( !((terraceleft[terraceleft.size()-1]==dad)&&(terraceright[terraceright.size()-1]==node)) )
+			{
+				terraceleft.push_back(dad);
+				terraceright.push_back(node);
+			}
+		}
+		else
+		{
+			terraceleft.push_back(dad);
+			terraceright.push_back(node);
+		}
+*/
+	if(node==root)
+	for(int iter=0;iter<terraceleft.size();iter++)
 	{
-		terraceleft.push_back(dad);
-		terraceright.push_back(node);
+		cout<<"\tterraceleft is "<<terraceleft[iter]->id;
+		cout<<"\tterraceright is "<<terraceright[iter]->id<<endl;;
 	}
+	cout<<endl;
+
 }
 
 void MExtTree::copystructure(MTree* T)
@@ -260,18 +287,32 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 		{								//for size-1
 			notrees*=z;
 		}
+
+		generateTrees(T,a,sze-1);
+		cout<<sze<< " taxon tree"<<endl;
+		for(int j=0;j<notrees;j++)
+		{
+			for(int k=1;k<2*sze-5;k++)
+			{
+				T[T.size()-k*notrees-j-1]->copyTree( T[T.size()-j-1] );
+			}
+		}
+
 		for (i = 0; i < 2*sze-5; i++)	//no of branches for size-1
 		{
 			temp.clear();
-			generateTrees(T,a,sze-1);
+//t			generateTrees(T,a,sze-1);
 			int flag=1;
 //			cout<<"\ntemp size is\t"<<T.size()<<endl;
 
 			for(int itz=1;itz<=notrees;itz++)
 			{
-				temp.push_back(T[T.size()-itz]);
+				temp.push_back(T[T.size()-i*notrees-itz]);
+				cout<<endl<<"for "<<itz<<"\t";
+				temp[temp.size()-1]->printTree(cout,0);
 //				T.pop_back();
 			}
+			cout<<endl;
 //			cout<<"\t"<<T.size()<<"\t"<<temp.size()<<endl;
 /*			cout<<"printing them for"<<i<<"time";
 			for(MTreeVector::iterator itemp=temp.begin(); itemp!=temp.end(); itemp++)
@@ -304,7 +345,7 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 				copyTree(temp[z]);
 				terraceleftright(root,root);
 				// add an internal node
-				Node *newnode = newNode(sze+i+z-2);
+				Node *newnode = newNode(10*sze+i*notrees+z+1);
 				// reconnect the left end
 				node = terraceleft[i];
 				for (NeighborVec::iterator it = node->neighbors.begin(); it != node->neighbors.end(); it++)
@@ -326,7 +367,7 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 						break;
 					}
 				// add a new leaf
-				Node *newleaf = newNode(sze-1,(char)a[sze-1]);
+				Node *newleaf = newNode(a[sze-1]);
 				newnode->addNeighbor(newleaf, len);
 				newleaf->addNeighbor(newnode, len);
 
@@ -338,32 +379,49 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 				terraceright.push_back(newleaf);
 
 				terraceright[i] = newnode;
+				cout<<"\nprinting after introducing the leaf\n";
+				for(int iter=0;iter<terraceleft.size();iter++)
+				{
+					cout<<"\tterraceleft is "<<terraceleft[iter]->id;
+					cout<<"\tterraceright is "<<terraceright[iter]->id<<endl;;
+				}
 
+/*
+				cout<<endl<<"for i "<<i<<" terraceleft is "<<terraceleft[i]->id;
+				cout<<"\nfor i "<<i<<" terraceright is "<<terraceright[i]->id;
+*/
 				myleaves.push_back(newleaf);
 				// indexing the leaves
-				for (int i = 0; i < myleaves.size(); i++)
+				for (int iter = 0; iter < myleaves.size(); iter++)
 				{
 					stringstream str;
-					str << 'T' << myleaves[i]->id;
-					myleaves[i]->name = str.str();
+					str << 'T' << myleaves[iter]->id;
+					myleaves[iter]->name = str.str();
+
 				}
 				leafNum = sze;
 				nodeNum = leafNum;
+//				cout<<"\n for i "<<i<<" and for z "<<z;
 /*				cout<<endl<<"printing T\t";
 //				T[T.size()-z-1]->printTree(cout);
 //				this->printTree(cout,WT_TAXON_ID);
-*/				T[T.size()-i-z-1]->copyTree(this);
-				if(sze==4)
+*/				T[T.size()-i*notrees-z-1]->copyTree(this);
+				if(sze==5)
 					{
-						cout<<"\nprinting this for "<<T.size()-i-z-1<<"\t";
-						T[T.size()-i-z-1]->printTree(cout);
+						cout<<"\nprinting this for "<<T.size()-i*notrees-z-1<<"\twhere i is "<<i<<" z is "<<z<<"\t\t";
+						T[T.size()-i*notrees-z-1]->printTree(cout,0);
 						cout<<endl;
 					}
 
+				myleaves.pop_back();		//dont know why thisis called here
+
 			}
+
 		}
-/*		T[2]->printTree(cout);
-		cout<<endl;
+/*			cout<<"i is "<<i<<";z is "<<z<<" for size "<<sze<<endl;
+			T[2]->printTree(cout);
+			cout<<endl;
+*/
 /*		T[1]->printTree(cout);
 		cout<<endl;
 		T[0]->printTree(cout);
@@ -372,6 +430,7 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 	}
 	else
 	{
+		cout<<"2 taxon tree"<<endl;
 		root = newNode(a[0]);
 		// create initial tree with 2 leaves
 		node = newNode(a[1]);
@@ -404,6 +463,7 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 //		cout<<"printing 2 taxa tree";
 //		T[T.size()-1]->printTree(cout);
 //		cout<<endl<<"working successfully\n";
+		terraceleftright(root,root);
 	}
 }
 
