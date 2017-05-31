@@ -297,22 +297,26 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 				T[T.size()-k*notrees-j-1]->copyTree( T[T.size()-j-1] );
 			}
 		}
-
+//		terraceleftright(root,root);
+//		cout<<"in size 3 funciton now";
 		for (i = 0; i < 2*sze-5; i++)	//no of branches for size-1
 		{
 			temp.clear();
-//t			generateTrees(T,a,sze-1);
+//			generateTrees(T,a,sze-1);
 			int flag=1;
 //			cout<<"\ntemp size is\t"<<T.size()<<endl;
 
 			for(int itz=1;itz<=notrees;itz++)
 			{
+//				T[T.size()-i*notrees-itz]->printTree(cout);
 				temp.push_back(T[T.size()-i*notrees-itz]);
 				cout<<endl<<"for "<<itz<<"\t";
-				temp[temp.size()-1]->printTree(cout,0);
+				temp[temp.size()-1]->printTree(cout);
 //				T.pop_back();
 			}
 			cout<<endl;
+			terraceleftright(root,root);
+			cout<<"in the loop now\n";
 //			cout<<"\t"<<T.size()<<"\t"<<temp.size()<<endl;
 /*			cout<<"printing them for"<<i<<"time";
 			for(MTreeVector::iterator itemp=temp.begin(); itemp!=temp.end(); itemp++)
@@ -344,6 +348,7 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 			// additionally add a leaf at all branches
 				copyTree(temp[z]);
 				terraceleftright(root,root);
+//				cout<<"in ineern most loop\n";
 				// add an internal node
 				Node *newnode = newNode(10*sze+i*notrees+z+1);
 				// reconnect the left end
@@ -436,7 +441,8 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 		node = newNode(a[1]);
 		root->addNeighbor(node, len);
 		node->addNeighbor(root, len);
-
+		this->printTree(cout);
+		cout<<endl;
 		terraceleft.push_back(root);
 		terraceright.push_back(node);
 		MTree t;
@@ -460,10 +466,11 @@ void MExtTree::generateTrees(MTreeVector T,int a[], int sze)
 //		Treenew.copyTree(this);
 //		T.push_back(&Treenew);
 
-//		cout<<"printing 2 taxa tree";
-//		T[T.size()-1]->printTree(cout);
+		cout<<"printing 2 taxa tree";
+		T[T.size()-1]->printTree(cout);
 //		cout<<endl<<"working successfully\n";
-		terraceleftright(root,root);
+//		terraceleftright(root,root);
+//		cout<<"for size 2 here";
 	}
 }
 
