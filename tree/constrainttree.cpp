@@ -94,7 +94,6 @@ void ConstraintTree::readConstraint(MTree &src_tree) {
 
 
 bool ConstraintTree::isCompatible(StrVector &tax1, StrVector &tax2) {
-
     ASSERT(!empty());
     
     if (tax1.size() <= 1 || tax2.size() <= 1)
@@ -102,18 +101,19 @@ bool ConstraintTree::isCompatible(StrVector &tax1, StrVector &tax2) {
 
     Split sp1(leafNum);
     Split sp2(leafNum);
-    
     StrVector::iterator it;
     StringIntMap::iterator mit;
     
     int tax_count1 = 0;
-    
     for (it = tax1.begin(); it != tax1.end(); it++)
-        if ((mit = taxname_index.find(*it)) != taxname_index.end()) {
-            // taxon found
+    {  	if ((mit = taxname_index.find(*it)) != taxname_index.end()) {
+//        	cout<<"MIT"<<(*mit);
+        	// taxon found
             tax_count1++;
             sp1.addTaxon(mit->second);
         }
+    }
+
     if (tax_count1 <= 1)
         return true;
         
@@ -127,7 +127,6 @@ bool ConstraintTree::isCompatible(StrVector &tax1, StrVector &tax2) {
     
     if (tax_count2 <= 1) 
         return true;
-    
     if (tax_count1 + tax_count2 == leafNum) {
         // tax1 and tax2 form all taxa in the constraint tree
         
@@ -166,7 +165,7 @@ bool ConstraintTree::isCompatible(StrVector &tax1, StrVector &tax2) {
 }
 
 bool ConstraintTree::isCompatible(Node *node1, Node *node2) {
-    if (empty())
+	if (empty())
         return true;
     StrVector taxset1, taxset2;
     getUnorderedTaxaName(taxset1, node1, node2);
@@ -175,16 +174,15 @@ bool ConstraintTree::isCompatible(Node *node1, Node *node2) {
 }
 
 bool ConstraintTree::isCompatible (MTree *tree) {
-    if (empty())
+	if (empty())
         return true;
     NodeVector nodes1, nodes2;
     tree->generateNNIBraches(nodes1, nodes2);
 //    tree->getAllInnerBranches(nodes1, nodes2);
     StrVector taxset1, taxset2;
-    
     // check that all internal branches are compatible with constraint
     for (int i = 0; i < nodes1.size(); i++) {
-        taxset1.clear();
+    	taxset1.clear();
         taxset2.clear();
         getUnorderedTaxaName(taxset1, nodes1[i], nodes2[i]);
         getUnorderedTaxaName(taxset2, nodes2[i], nodes1[i]);
