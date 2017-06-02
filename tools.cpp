@@ -2636,7 +2636,7 @@ void parseArg(int argc, char *argv[], Params &params) {
 				params.min_correlation = convert_double(argv[cnt]);
 				continue;
 			}
-			if (strcmp(argv[cnt], "-brefine") == 0) {
+			if (strcmp(argv[cnt], "-bbn") == 0) {
 				params.ufboot2corr = true;
                 // print ufboot trees with branch lengths
 				params.print_ufboot_trees = 2;
